@@ -10,34 +10,6 @@ const { Sequelize } = require("sequelize");
 require("dotenv").config();
 
 const app = express();
-// swagger
-const swaggerUi = require("swagger-ui-express");
-const swaggerJsdoc = require("swagger-jsdoc");
-
-// Configuração do Swagger
-const swaggerOptions = {
-  definition: {
-    openapi: "3.0.0", // Versão do OpenAPI
-    info: {
-      title: "Minha API Node.js", // Nome da API
-      version: "1.0.0", // Versão da API
-      description: "Documentação da API utilizando Swagger",
-    },
-    servers: [
-      {
-        url: "http://localhost:3000", // URL base da API
-        description: "Servidor local",
-      },
-    ],
-  },
-  apis: ["src/routes/*.js"], // Caminho para arquivos de rotas
-};
-
-// Gerar especificações do Swagger
-const swaggerDocs = swaggerJsdoc(swaggerOptions);
-
-// Rota para exibir a documentação
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 PORT = process.env.PORT || 3000;
 
