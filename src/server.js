@@ -93,6 +93,8 @@ const sequelize = new Sequelize(
     dialect: process.env.DATABASE_DIALECT,
     timezone: "+01:00", // Luanda está em UTC+1
     host: process.env.DATABASE_HOST,
+    port: process.env.PORT,
+    logging: false,
     dialectOptions: {
       ssl: {
         require: true,
