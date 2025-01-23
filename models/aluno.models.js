@@ -1,0 +1,47 @@
+'use strict';
+const { Model, DataTypes } = require('sequelize');
+
+module.exports = (sequelize, DataTypes) => {
+  class Alunos extends Model {}
+  
+  Alunos.init({
+    n_do_processo: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    n_do_aluno: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    nome_completo: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    classe: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    turno: {
+      type: DataTypes.ENUM("m", "t", "n"),
+      allowNull: false,
+    },
+    ano_letivo: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    turma: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    curso: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+  }, {
+    sequelize,
+    modelName: 'Alunos',
+    tableName: 'Alunos',
+  });
+
+  return Alunos;
+};
