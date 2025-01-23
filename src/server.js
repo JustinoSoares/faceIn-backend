@@ -85,11 +85,7 @@ app.get("/", (req, res) => {
 });
 
 // Verificação da conexão
-const sequelize = new Sequelize(
-  process.env.DATABASE_NAME,
-  process.env.DATABASE_USER,
-  process.env.DATABASE_PASSWORD,
-  {
+const sequelize = new Sequelize(process.env.DATABASE_URL,{
     dialect: process.env.DATABASE_DIALECT,
     timezone: "+01:00", // Luanda está em UTC+1
     host: process.env.DATABASE_HOST,
