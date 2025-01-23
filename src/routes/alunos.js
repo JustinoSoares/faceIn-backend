@@ -16,56 +16,6 @@ const { validationResult } = require("express-validator");
 const validator = require("../validator/users.validator.js");
 const { where, Op } = require("sequelize");
 
-/**
- * @swagger
- * /alunos/create:
- *   post:
- *     summary: Cadastrar um novo aluno
- *     description: Cadastra um novo aluno e armazena as imagens no Cloudinary.
- *     consumes:
- *       - multipart/form-data
- *     parameters:
- *       - in: formData
- *         name: nome_completo
- *         required: true
- *         type: string
- *         description: Nome completo do aluno.
- *       - in: formData
- *         name: turno
- *         required: true
- *         type: string
- *         description: Turno do aluno.
- *       - in: formData
- *         name: classe
- *         required: true
- *         type: string
- *         description: Classe do Aluno.
- *       - in: formData
- *         name: n_do_aluno
- *         required: true
- *         type: string
- *         description: Número do aluno.
- *       - in: formData
- *         name: ano_letivo
- *         required: true
- *         type: string
- *         description: Ano lectivo no formato 2024/2025.
- *       - in: formData
- *         name: curso
- *         required: true
- *         type: string
- *         description: Curso do aluno. 
- *       - in: formData
- *         name: images
- *         required: true
- *         type: file
- *         description: Fotos do aluno (mínimo 3 imagens).
- *     responses:
- *       201:
- *         description: Aluno cadastrado com sucesso.
- *       400:
- *         description: Erro ao cadastrar aluno ou imagens insuficientes.
- */
 router.post(
   "/create",
   validator.create,
@@ -157,41 +107,12 @@ router.post(
   }
 );
 
-
-/**
- * @swagger
- * alunos/:
- *   get:
- *     summary: Listar alunos
- *     description: Retorna todos os alunos com base em parâmetros de consulta.
- *     parameters:
- *       - in: query
- *         name: maxLen
- *         required: false
- *         type: integer
- *         description: Número máximo de alunos a retornar.
- *       - in: query
- *         name: offset
- *         required: false
- *         type: integer
- *         description: Offset para paginação.
- *       - in: query
- *         name: pesquisa
- *         required: false
- *         type: string
- *         description: Nome parcial para buscar alunos.
- *     responses:
- *       200:
- *         description: Lista de alunos.
- *       400:
- *         description: Erro ao buscar os alunos.
- */
-router.get("/", async (req, res) => {
+router.get("/all", async (req, res) => {
   try {
     const maxLen = req.query.maxLen || 3;
     const offset = req.query.offset || 0;
     const pesquisa = req.query.pesquisa || "";
-    const attribute = req.query.attribute || "id";
+    const attribute = req.query.attribute || "nome_completo";
     const order = req.query.order || "ASC";
 
     const aluno = await Alunos.findAll({
