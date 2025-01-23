@@ -98,7 +98,7 @@ const sequelize = new Sequelize(
     dialectOptions: {
       ssl: {
         require: true,
-        rejectUnauthorized: false, // Use true em produção
+        rejectUnauthorized: true, // Use true em produção
       },
     },
   }
