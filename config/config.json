@@ -13,28 +13,28 @@
       }
     },
     "test": {
-      "username": "xadrez_sdqp_user",
-      "password": "Nx1YksbzfGp37D6xHsFTDkyQPrTxyPgs",
-      "database": "xadrez_sdqp",
-      "host": "dpg-ctu20ihopnds73ci98r0-a",
+      "username": "api_escola_user",
+      "password": "4rZfbLh6CPB75aLA4lOPLfwDbN4VUTmz",
+      "database": "api_escola",
+      "host": "dpg-cu97kb1opnds73aq0ugg-a.oregon-postgres.render.com",
       "dialect": "postgres",
       "dialectOptions": {
         "ssl": {
           "require": true,
-          "rejectUnauthorized": false
+          "rejectUnauthorized": true
         }
       }
     },
     "production": {
-      "username": "neondb_owner",
-      "password": "XkglI30EBJLu",
-      "database": "neondb",
-      "host": "ep-damp-breeze-a5h0r5ox.us-east-2.aws.neon.tech",
+      "username": "api_escola_user",
+      "password": "4rZfbLh6CPB75aLA4lOPLfwDbN4VUTmz",
+      "database": "api_escola",
+      "host": "dpg-cu97kb1opnds73aq0ugg-a.oregon-postgres.render.com",
       "dialect": "postgres",
       "dialectOptions": {
         "ssl": {
           "require": true,
-          "rejectUnauthorized": false
+          "rejectUnauthorized": true
         }
       }
     }
