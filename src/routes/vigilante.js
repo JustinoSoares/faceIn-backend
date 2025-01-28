@@ -138,7 +138,7 @@ router.delete("/delete/:id", async (req, res) => {
 router.post("/permitir/:alunoId", auth.vigilante, control.permitir);
 // negar a entrada de um aluno
 router.post("/negar/:alunoId", auth.vigilante, control.negar);
-// reconhecimento
+// quando uma aluno é reconhecido
 router.get("/reconhecimento/:alunoId", control.reconhecimento);
 // pagar a propina para cada aluno
 router.post("/pagar_propina/:alunoId", control.pagar_propina);
