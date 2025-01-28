@@ -22,11 +22,14 @@ router.post("/create", validator.create, async (req, res) => {
     }
     const { nome_completo, telefone, email, turno, desc } = req.body;
 
+
+
     const allUsers = await Users.findOne({
       where: {
         [Op.or]: [{ email }, { telefone }],
       },
     });
+
     if (allUsers) {
       return res.status(400).json({
         status: false,
@@ -81,9 +84,25 @@ router.post("/create", validator.create, async (req, res) => {
 router.get("/all", async (req, res) => {
   try {
     const vigilante = await Vigilante.findAll();
+    const each_vigilante = await Promise.all(
+      vigilante.map(async (each) =>{
+        const user = await Users.findByPk(each.UserId);
+        const data = {
+          nome_completo : user.nome_completo,
+          telefone : user.telefone,
+          email: user.email,
+          turno : each.turno,
+          descricao : each.descricao,
+          createdAt : user.createdAt,
+          updatedAt : user.updatedAt
+        }
+        return data
+      })
+    )
+
     return res.status(200).json({
       status: true,
-      data: vigilante,
+      data: each_vigilante,
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
