@@ -144,24 +144,6 @@ router.get("/all", async (req, res) => {
   }
 });
 
-/**
- * @swagger
- * alunos/{id}:
- *   get:
- *     summary: Buscar aluno por ID
- *     description: Retorna as informações de um aluno específico.
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         type: integer
- *         description: ID do aluno.
- *     responses:
- *       200:
- *         description: Detalhes do aluno.
- *       404:
- *         description: Aluno não encontrado.
- */
 router.get("/:id", async (req, res) => {
   try {
     const aluno = await Alunos.findByPk(req.params.id);
@@ -198,60 +180,6 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-/**
- * @swagger
- * /propinas_pagas/{alunoId}:
- *   get:
- *     summary: Retorna as propinas pagas por um aluno específico
- *     description: Busca todas as propinas pagas pelo aluno identificado pelo `alunoId`.
- *     tags:
- *       - Propinas
- *     parameters:
- *       - name: alunoId
- *         in: path
- *         required: true
- *         description: ID do aluno cujas propinas pagas serão retornadas.
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Lista de propinas pagas pelo aluno.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: boolean
- *                   example: true
- *                 proninas:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                         description: ID da propina.
- *                       mes:
- *                         type: string
- *                         description: Mês referente à propina.
- *                       ano_letivo:
- *                         type: string
- *                         description: Ano letivo referente à propina.
- *       400:
- *         description: Erro ao buscar as propinas pagas.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: boolean
- *                   example: false
- *                 error:
- *                   type: string
- *                   example: "Erro ao buscar as propinas pagas."
- */
 router.get("/propinas_pagas/:alunoId", async (req, res) => {
   const alunoId = req.params.alunoId;
   const pagas = await Aluno_propina.findAll({
