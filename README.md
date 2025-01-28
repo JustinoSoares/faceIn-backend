@@ -223,8 +223,6 @@
 
 ---
 
----
-
 ## Endpoints for Vigilante
 
 ### 1. Create a Vigilante
