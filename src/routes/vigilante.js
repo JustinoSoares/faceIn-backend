@@ -10,7 +10,7 @@ const validator = require("../validator/vigilantes.validator.js");
 const control = require("../controllers/control.controller.js");
 
 // endpoit para criar um vigilante
-router.post("/create", validator.create, async (req, res) => {
+router.post("/create", auth.double, validator.create, async (req, res) => {
   try {
     const errors = validationResult(req);
 
@@ -110,7 +110,7 @@ router.post("/create", validator.create, async (req, res) => {
   }
 });
 // endpoit to get all vigilantes
-router.get("/all", async (req, res) => {
+router.get("/all", auth.double, async (req, res) => {
   try {
     const vigilante = await Vigilante.findAll();
     const each_vigilante = await Promise.all(
@@ -138,7 +138,7 @@ router.get("/all", async (req, res) => {
   }
 });
 //get each vigilantes
-router.get("/each/:id", async (req, res) => {
+router.get("/each/:id", auth.double, async (req, res) => {
   try {
     const vigilante = await Vigilante.findByPk(req.params.id);
     if (!vigilante)
@@ -155,7 +155,7 @@ router.get("/each/:id", async (req, res) => {
   }
 });
 // update to de each vigilante
-router.put("/update/:id", async (req, res) => {
+router.put("/update/:id", auth.double, async (req, res) => {
   try {
     const vigilante = await Vigilante.findByPk(req.params.id);
     if (!vigilante)
@@ -170,7 +170,7 @@ router.put("/update/:id", async (req, res) => {
   }
 });
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:id", auth.double, async (req, res) => {
   try {
     const vigilante = await Vigilante.findByPk(req.params.id);
     if (!vigilante)
