@@ -263,3 +263,7 @@ exports.pagar_propina = async (req, res) => {
     });
   }
 };
+
+exports.historico = async (req, res) =>{
+  const user
+}

@@ -126,7 +126,7 @@ router.get("/all", async (req, res) => {
       order: [[attribute, order]],
     });
 
-    res.status(201).json({
+    res.status(200).json({
       status: true,
       msg: "Todos os Alunos",
       data: aluno,
