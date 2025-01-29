@@ -465,6 +465,35 @@
     ```
 
 ---
+### 9. Histories
+**POST** `/historico/`
+- **Request Query**:
+  - `limit` (string) - limit of each page
+  - `lastPage` (string) - last page
+  - `order` (string) - Order of data cames
+  - `atribute` (string) - Atribute that is order
+ 
+    
+  - **200** (Success)
+    ```json
+    {
+      "status": true,
+      "is_lastPages" : false,
+      "alunosLength": 1000,
+      "vigilanteLength": 1000,
+      "historico" : {
+         "alunoId": ...,
+          "nome_completo": ...,
+          "timestamp": ...,
+          "img": ...,
+          "status": ...,
+          "createdAt": ...,
+          "lastPage": ...,
+      }
+    }
+    ```
+
+---
 
 ## Error Handling
 - **400** - Bad Request: Invalid or missing data in the request.
