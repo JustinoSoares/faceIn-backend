@@ -191,6 +191,8 @@ router.get("/reconhecimento/:alunoId", control.reconhecimento);
 // pagar a propina para cada aluno
 router.post("/pagar_propina/:alunoId", control.pagar_propina);
 
+router.get("/historico/", control.historico);
+
 
 
 module.exports = router;

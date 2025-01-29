@@ -5,9 +5,9 @@ const {
   Historico,
   Propinas,
   Aluno_propina,
+  Vigilante,
   Fotos,
 } = require("../../models/index");
-const { compareSync } = require("bcrypt");
 
 exports.permitir = async (req, res) => {
   try {
@@ -181,8 +181,8 @@ exports.reconhecimento = async (req, res) => {
       imagem: foto ? foto.url : null, // Verificar se foto existe
       n_do_processo: aluno.n_do_processo,
       turno: aluno.turno,
-      turma : aluno.turma,
-      curso : aluno.curso,
+      turma: aluno.turma,
+      curso: aluno.curso,
       status_propina,
     };
 
@@ -264,3 +264,64 @@ exports.pagar_propina = async (req, res) => {
   }
 };
 
+exports.historico = async (req, res) => {
+  try {
+    const limit = req.query.limit || 5;
+    const lastPage = req.query.lastPage || 1;
+    const order = req.query.order || "DESC";
+    const atribute = req.query.atribute || "createdAt";
+
+    const countHist = await Historico.count();
+    let pages = (countHist / limit).ceil;
+    if (countHist == 0)
+        pages = 1;
+    let is_lastPages = false;
+    if (pages == lastPage)
+        is_lastPages = true;
+    offset = limit * lastPage;
+
+    const historico = await Historico.findAll({
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+      order: [[atribute, order]],
+    });
+    //pegar o historico de entrada que eu preciso
+    const HistoricoAlunos = await Promise.all(
+      historico.map(async (each) => {
+        const aluno = await Alunos.findByPk(each.userId);
+        const photo = await File.findAll({
+          where: { alunoId: aluno.id },
+          limit: 1,
+        });
+        data = {
+          alunoId: aluno.id,
+          nome_completo: aluno.nome_completo,
+          timestamp: each.createdAt,
+          img: photo.url,
+          status: each.status,
+          createdAt: aluno.createdAt,
+          lastPage: lastPage,
+        };
+        return data;
+      })
+    );
+
+    //estatistica
+    const countVigilante = await Vigilante.count();
+
+    return res.status(200).json({
+      status: true,
+      is_lastPages,
+      alunosLength: HistoricoAlunos.length,
+      vigilanteLength: countVigilante,
+      historico: HistoricoAlunos,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: false,
+      data: {
+        error: error.message,
+      },
+    });
+  }
+};

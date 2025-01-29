@@ -47,7 +47,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 
 // Rotas
-app.use("/alunos", alunosRoutes);
+app.use("/aluno", alunosRoutes);
 app.use("/vigilante", vigilanteRoutes);
 app.use("/auth", authRoutes);
 
