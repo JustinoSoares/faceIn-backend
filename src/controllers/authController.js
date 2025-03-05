@@ -6,7 +6,7 @@ module.exports = {
   async login(req, res) {
     try {
       const { email, password } = req.body;
-      if (!email || password){
+      if (!email || !password){
         return res.status(404).json({
           status: false,
           error: [
