@@ -4,10 +4,9 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Vigilantes', {
       id: {
-        allowNull: false,
-        autoIncrement: true,
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
-        type: Sequelize.INTEGER,
       },
       turno: {
         type: Sequelize.ENUM('m', 't', 'n', 'manhã', 'tarde', 'noite'),
@@ -18,7 +17,7 @@ module.exports = {
         allowNull: true,
       },
       UserId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         allowNull : false,
         references: {
           model: 'Users',

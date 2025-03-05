@@ -190,7 +190,7 @@ router.post("/negar/:alunoId", auth.vigilante, control.negar);
 router.get("/reconhecimento/:alunoId", control.reconhecimento);
 // pagar a propina para cada aluno
 router.post("/pagar_propina/:alunoId", control.pagar_propina);
-
+// pegar o historico dos alunos
 router.get("/historico/", control.historico);
 
 

@@ -1,6 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 const bcrypt = require('bcryptjs');
+const { v4: uuidv4 } = require("uuid");
 
 module.exports = (sequelize, DataTypes) => {
   class Users extends Model {
@@ -13,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Users.init({
+    id : {
+      type : DataTypes.UUID,
+      primaryKey : true,
+      defaultValue : uuidv4,
+    },
     nome_completo: {
       type: DataTypes.STRING,
       allowNull: false,

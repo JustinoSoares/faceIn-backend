@@ -1,6 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 const Aluno = require("./aluno.models");
+const { v4: uuidv4 } = require("uuid");
 
 module.exports = (sequelize, DataTypes) => {
   class Propinas extends Model {}
@@ -8,7 +9,8 @@ module.exports = (sequelize, DataTypes) => {
   Propinas.init(
     {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue : uuidv4,
         primaryKey: true,
         autoIncrement: true,
       },

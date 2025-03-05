@@ -6,6 +6,17 @@ module.exports = {
   async login(req, res) {
     try {
       const { email, password } = req.body;
+      if (!email || password){
+        return res.status(404).json({
+          status: false,
+          error: [
+            {
+              msg: "Dados Inválidos",
+            },
+          ],
+        });
+      }
+
       const user = await Users.findOne({ where: { email } });
       if (!user) {
         return res.status(404).json({

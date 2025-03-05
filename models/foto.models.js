@@ -1,15 +1,16 @@
 'use strict';
 const { Model } = require('sequelize');
 const Aluno = require('./aluno.models');
+const { v4: uuidv4 } = require("uuid");
 
 module.exports = (sequelize, DataTypes) => {
   class Fotos extends Model {}
   
   Fotos.init({
     id : {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: uuidv4,
       primaryKey: true,
-      autoIncrement: true,
     },
     descricao: {
       type: DataTypes.STRING,
@@ -20,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     alunoId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       references: {
         model: Aluno,
         key: 'id',

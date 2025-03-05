@@ -1,24 +1,23 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     queryInterface.createTable("Alunos_propina", {
       id: {
-        allowNull: false,
-        autoIncrement: true,
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
-        type: Sequelize.INTEGER,
       },
       alunoId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: {
           model: "Alunos",
           key: "id",
         },
       },
       propinaId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: {
           model: "Propinas",
           key: "id",
@@ -26,7 +25,7 @@ module.exports = {
       },
       valor: {
         type: Sequelize.STRING,
-        allowNull : false,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
@@ -34,12 +33,12 @@ module.exports = {
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE, 
+        type: Sequelize.DATE,
       },
     });
   },
 
-  async down (queryInterface, Sequelize) {
-      queryInterface.dropTable("Alunos_propina");
-  }
+  async down(queryInterface, Sequelize) {
+    queryInterface.dropTable("Alunos_propina");
+  },
 };

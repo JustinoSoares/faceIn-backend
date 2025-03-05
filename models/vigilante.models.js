@@ -1,7 +1,8 @@
-'use strict';
-const { Model, DataTypes } = require('sequelize');
-const bcrypt = require('bcryptjs');
-const Users = require('./users.models');
+"use strict";
+const { Model, DataTypes } = require("sequelize");
+const bcrypt = require("bcryptjs");
+const Users = require("./users.models");
+const { v4: uuidv4 } = require("uuid");
 
 module.exports = (sequelize, DataTypes) => {
   class Vigilante extends Model {
@@ -13,28 +14,36 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  Vigilante.init({
-    turno: {
-      type: DataTypes.ENUM("m", "t", "n", "manhã", "tarde", "noite"),
-      allowNull: false,
-    },
-    descricao: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    UserId: {
-      type: DataTypes.INTEGER,
-      allowNull : false,
-      references: {
-        model: Users,
-        key: 'id',
+  Vigilante.init(
+    {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: uuidv4,
+        primaryKey : true,
+      },
+      turno: {
+        type: DataTypes.ENUM("m", "t", "n", "manhã", "tarde", "noite"),
+        allowNull: false,
+      },
+      descricao: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      UserId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+          model: Users,
+          key: "id",
+        },
       },
     },
-  }, {
-    sequelize,
-    modelName: 'Vigilante',
-    tableName: 'Vigilantes',
-  });
+    {
+      sequelize,
+      modelName: "Vigilante",
+      tableName: "Vigilantes",
+    }
+  );
 
   return Vigilante;
 };

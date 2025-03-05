@@ -7,10 +7,9 @@ module.exports = {
       "Propinas",
       {
         id: {
-          allowNull: false,
-          autoIncrement: true,
+          type: Sequelize.UUID,
+          defaultValue: Sequelize.UUIDV4,
           primaryKey: true,
-          type: Sequelize.INTEGER,
         },
         mes: {
           type: Sequelize.ENUM(

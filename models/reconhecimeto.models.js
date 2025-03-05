@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
 
 module.exports = (sequelize, DataTypes) => {
   class Reconhecimento extends Model {}
@@ -7,12 +8,12 @@ module.exports = (sequelize, DataTypes) => {
   Reconhecimento.init(
     {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue : uuidv4,
         primaryKey: true,
-        autoIncrement: true,
       },
       alunoId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false, // Garantir que a chave estrangeira não seja nula
         references: {
           model: "Alunos", // Nome da tabela relacionada

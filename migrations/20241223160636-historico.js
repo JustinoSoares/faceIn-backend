@@ -1,35 +1,34 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    queryInterface.createTable('Historico', {
+  async up(queryInterface, Sequelize) {
+    queryInterface.createTable("Historico", {
       id: {
-        allowNull: false,
-        autoIncrement: true,
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
-        type: Sequelize.INTEGER,
       },
       alunoId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: {
-          model: 'Alunos',
-          key: 'id',
+          model: "Alunos",
+          key: "id",
         },
       },
-      motivo_negacao : {
-        type : Sequelize.STRING,
-        allowNull : true,
+      motivo_negacao: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       userId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: {
-          model: 'Users',
-          key: 'id',
+          model: "Users",
+          key: "id",
         },
       },
       status: {
-        type: Sequelize.ENUM('Permitido', 'Negado'),
+        type: Sequelize.ENUM("Permitido", "Negado"),
         allowNull: false,
       },
       timestamp: {
@@ -46,7 +45,7 @@ module.exports = {
       },
     });
   },
-  async down (queryInterface, Sequelize) {
-    queryInterface.dropTable('Historico');
-  }
+  async down(queryInterface, Sequelize) {
+    queryInterface.dropTable("Historico");
+  },
 };

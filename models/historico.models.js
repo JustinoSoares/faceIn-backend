@@ -3,11 +3,18 @@ const { Model, DataTypes } = require("sequelize");
 const Vigilante = require("./vigilante.models");
 const Users = require("../models/users.models");
 const Aluno = require("./aluno.models");
+const { v4: uuidv4 } = require("uuid");
 module.exports = (sequelize, DataTypes) => {
   class Historico extends Model {}
 
   Historico.init(
     {
+
+      id : {
+        type : DataTypes.UUID,
+        defaultValue : uuidv4,
+        primaryKey : true,
+      },
       timestamp: {
         type: DataTypes.DATE,
         allowNull: false,
