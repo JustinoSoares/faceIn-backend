@@ -45,6 +45,7 @@ router.post(
           error: [
             {
               msg: "O Aluno deve ter no mínimo 3 fotos",
+              imagesReceved: urls.length,
             },
           ],
         });
