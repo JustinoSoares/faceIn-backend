@@ -14,4 +14,29 @@ const create = [
   body("curso").notEmpty().withMessage("O Curso do Aluno é obrigatória"),
 ];
 
-module.exports = { create };
+const validateImages = (req, res, next) => {
+  const { images } = req.body;
+
+  // Verifica se "images" é um array
+  if (!Array.isArray(images)) {
+    return res.status(400).json({ error: "As imagens devem ser um array de URLs." });
+  }
+
+  // Verifica se há entre 3 e 5 imagens
+  if (images.length < 3 || images.length > 5) {
+    return res.status(400).json({ error: "O número de imagens deve ser entre 3 e 5." });
+  }
+
+  // Verifica se todas são URLs válidas
+  const urlRegex = /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))$/i;
+  const invalidUrls = images.filter((url) => !urlRegex.test(url));
+
+  if (invalidUrls.length > 0) {
+    return res.status(400).json({ error: "Uma ou mais URLs de imagens são inválidas." });
+  }
+
+  next();
+};
+
+
+module.exports = { create, validateImages };

@@ -19,36 +19,38 @@ const { where, Op } = require("sequelize");
 router.post(
   "/create",
   validator.create,
+  validator.validateImages,
   upload.array("images", 5),
   async (req, res) => {
     try {
-      if (!req.files) {
-        return res.status(400).json({
-          status: false,
-          msg: "Nenhuma imagem enviada",
-        });
-      }
-      const uploadPromise = req.files.map((file, index) => {
-        return cloudinary.uploader.upload(req.files[index].path);
-      });
-      const results = await Promise.all(uploadPromise);
-      //apaga arquivos locais
-      req.files.forEach((file) => {
-        fs.unlinkSync(file.path);
-      });
+      // if (!req.files) {
+      //   return res.status(400).json({
+      //     status: false,
+      //     msg: "Nenhuma imagem enviada",
+      //   });
+      // }
+      // console.log("FIles: " + JSON.stringify(req.files));
+      // const uploadPromise = req.files.map((file, index) => {
+      //   return cloudinary.uploader.upload(req.files[index].path);
+      // });
+      // const results = await Promise.all(uploadPromise);
+      // //apaga arquivos locais
+      // req.files.forEach((file) => {
+      //   fs.unlinkSync(file.path);
+      // });
       //Url das imagens
-      const urls = results.map((result) => result.secure_url);
+      // const urls = results.map((result) => result.secure_url);
 
-      if (urls.length < 3) {
-        return res.status(400).json({
-          status: false,
-          error: [
-            {
-              msg: "O Aluno deve ter no mínimo 3 fotos",
-            },
-          ],
-        });
-      }
+      // if (urls.length < 3) {
+      //   return res.status(400).json({
+      //     status: false,
+      //     error: [
+      //       {
+      //         msg: "O Aluno deve ter no mínimo 3 fotos",
+      //       },
+      //     ],
+      //   });
+      // }
 
       const {
         nome_completo,
@@ -58,6 +60,7 @@ router.post(
         ano_letivo,
         turma,
         curso,
+        images,
       } = req.body;
 
       const allAlunos = await Alunos.findAll({
@@ -81,7 +84,7 @@ router.post(
         curso,
       });
       const fotos = await Promise.all(
-        urls.map(async (url) => {
+        images.map(async (url) => {
           const fotoData = await Fotos.create({
             url: url,
             alunoId: aluno.id,
@@ -149,8 +152,8 @@ router.get("/:id", async (req, res) => {
     const aluno = await Alunos.findByPk(req.params.id);
     if (!aluno) return res.status(400).json({ error: "Aluno não encontrado" });
     return res.status(201).json({
-      status : true,
-      data : aluno,
+      status: true,
+      data: aluno,
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
