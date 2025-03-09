@@ -10,7 +10,7 @@ const validator = require("../validator/vigilantes.validator.js");
 const control = require("../controllers/control.controller.js");
 
 // endpoit para criar um vigilante
-router.post("/create", auth.double, validator.create, async (req, res) => {
+router.post("/create", auth.admin, validator.create, async (req, res) => {
   try {
     const errors = validationResult(req);
 
@@ -110,7 +110,7 @@ router.post("/create", auth.double, validator.create, async (req, res) => {
   }
 });
 // endpoit to get all vigilantes
-router.get("/all", auth.double, async (req, res) => {
+router.get("/all", auth.admin, async (req, res) => {
   try {
     const vigilante = await Vigilante.findAll();
     const each_vigilante = await Promise.all(
