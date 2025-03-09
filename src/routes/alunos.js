@@ -51,7 +51,6 @@ router.post(
       //     ],
       //   });
       // }
-
       const {
         nome_completo,
         turno,
