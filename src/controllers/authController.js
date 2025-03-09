@@ -53,7 +53,7 @@ module.exports = {
       // Gerar Token
       const SECRET = process.env.JWT_SECRET;
       const token = jwt.sign(
-        { id: user.id, email: user.email, type: user.type },
+        { id: user.id, nome : user.nome_completo , email: user.email, type: user.type },
         SECRET,
         { expiresIn: process.env.JWT_EXPIRATION || "1d" }
       );

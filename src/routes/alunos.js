@@ -20,6 +20,7 @@ router.post(
   "/create",
   validator.create,
   validator.validateImages,
+  auth.admin,
   upload.array("images", 5),
   async (req, res) => {
     try {
