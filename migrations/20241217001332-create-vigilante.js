@@ -4,7 +4,7 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Vigilantes', {
       id: {
-        type: Sequelize.UUID,
+        type: Sequelize.STRING,
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
       },
@@ -17,7 +17,7 @@ module.exports = {
         allowNull: true,
       },
       UserId: {
-        type: Sequelize.UUID,
+        type: Sequelize.STRING,
         allowNull : false,
         references: {
           model: 'Users',

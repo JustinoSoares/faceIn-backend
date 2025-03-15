@@ -56,7 +56,7 @@ router.post(
         nome_completo,
         turno,
         classe,
-        n_do_aluno,
+        // n_do_aluno,
         ano_letivo,
         turma,
         curso,
@@ -69,16 +69,13 @@ router.post(
         limit: 1,
       });
 
-      let n_do_processo = 1;
-      if (allAlunos.length > 0) {
-        n_do_processo = allAlunos[0].n_do_processo + 1; // Acessa o primeiro registro do array
-      }
+
       const aluno = await Alunos.create({
-        n_do_processo,
+        // n_do_processo,
         nome_completo,
         turno,
         classe,
-        n_do_aluno,
+        // n_do_aluno,
         ano_letivo,
         turma,
         curso,

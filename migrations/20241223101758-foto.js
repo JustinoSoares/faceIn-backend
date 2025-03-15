@@ -5,7 +5,7 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     queryInterface.createTable("Fotos", {
       id: {
-        type: Sequelize.UUID,
+        type: Sequelize.STRING,
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
       },
@@ -18,7 +18,7 @@ module.exports = {
         allowNull: false,
       },
       alunoId: {
-        type: Sequelize.UUID,
+        type: Sequelize.STRING,
         references: {
           model: "Alunos",
           key: "id",

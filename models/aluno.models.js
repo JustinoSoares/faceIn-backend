@@ -13,11 +13,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     n_do_processo: {
       type: DataTypes.INTEGER,
+      autoIncrement : true,
       allowNull: false,
     },
     n_do_aluno: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     nome_completo: {
       type: DataTypes.STRING,

@@ -5,12 +5,12 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("Reconhecimento", {
       id: {
-        type: Sequelize.UUID,
+        type: Sequelize.STRING,
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
       },
       alunoId: {
-        type: Sequelize.UUID,
+        type: Sequelize.STRING,
         allowNull: false, // Chave estrangeira não pode ser nula
         references: {
           model: "Alunos", // Nome da tabela relacionada

@@ -5,12 +5,12 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     queryInterface.createTable("Historico", {
       id: {
-        type: Sequelize.UUID,
+        type: Sequelize.STRING,
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
       },
       alunoId: {
-        type: Sequelize.UUID,
+        type: Sequelize.STRING,
         references: {
           model: "Alunos",
           key: "id",
@@ -21,7 +21,7 @@ module.exports = {
         allowNull: true,
       },
       userId: {
-        type: Sequelize.UUID,
+        type: Sequelize.STRING,
         references: {
           model: "Users",
           key: "id",

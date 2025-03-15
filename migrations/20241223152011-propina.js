@@ -7,7 +7,7 @@ module.exports = {
       "Propinas",
       {
         id: {
-          type: Sequelize.UUID,
+          type: Sequelize.STRING,
           defaultValue: Sequelize.UUIDV4,
           primaryKey: true,
         },

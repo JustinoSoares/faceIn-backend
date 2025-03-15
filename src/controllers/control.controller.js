@@ -9,6 +9,27 @@ const {
   Fotos,
 } = require("../../models/index");
 
+
+
+async function numero_do_aluno(alunoId) {
+  const aluno = await Alunos.findByPk(alunoId);
+  if (!aluno)
+    return -1;
+  const Aluno_na_turma = await Alunos.findAll({
+    where : {
+      turma : aluno.turma,
+      classe : aluno.classe,
+      curso : aluno.curso,
+      ano_letivo : aluno.ano_letivo
+    },
+    order : [["nome_completo", "ASC"]]
+  });
+
+  const posicao = Aluno_na_turma.findIndex(a => a.id === alunoId) + 1
+  return posicao;
+  
+}
+
 exports.permitir = async (req, res) => {
   try {
     const alunoId = req.params.alunoId;
