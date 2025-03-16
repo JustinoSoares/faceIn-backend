@@ -9,8 +9,6 @@ const {
   Fotos,
 } = require("../../models/index");
 
-
-
 async function numero_do_aluno(alunoId) {
   const aluno = await Alunos.findByPk(alunoId);
   if (!aluno)

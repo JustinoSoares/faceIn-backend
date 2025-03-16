@@ -9,12 +9,12 @@ module.exports = {
     dialect: "postgres",
     timezone: "+01:00", // Luanda está em UTC+1
     logging: false,
-    // dialectOptions: {
-    //   ssl: {
-    //     require: true,
-    //     rejectUnauthorized: true, // Use true em produção
-    //   },
-    // },
+     dialectOptions: {
+       ssl: {
+         require: true,
+         rejectUnauthorized: true, // Use true em produção
+       },
+     },
   },
   test: {
     username: process.env.DATABASE_USER,
