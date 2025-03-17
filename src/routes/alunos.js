@@ -15,6 +15,7 @@ const auth = require("../auth/main.auth.js");
 const { validationResult } = require("express-validator");
 const validator = require("../validator/users.validator.js");
 const { where, Op } = require("sequelize");
+const { off } = require("process");
 
 router.post(
   "/create",
@@ -109,22 +110,13 @@ router.post(
 
 router.get("/all", async (req, res) => {
   try {
-    const maxLen = req.query.maxLen || 3;
-    const offset = req.query.offset || 0;
+    // const maxLen = req.query.maxLen || 3;
+    // const offset = req.query.offset || 0;
     const pesquisa = req.query.pesquisa || "";
     const attribute = req.query.attribute || "nome_completo";
     const order = req.query.order || "ASC";
-
-    const aluno = await Alunos.findAll({
-      where: {
-        nome_completo: {
-          [Op.like]: `%${pesquisa}%`,
-        },
-      },
-      limit: maxLen,
-      offset,
-      order: [[attribute, order]],
-    });
+    const perPage = req.query.perPage || 7;
+    const currentPage = req.query.currentPage || 1;
 
     const TotalAlunos = await Alunos.count({
       where: {
@@ -132,16 +124,35 @@ router.get("/all", async (req, res) => {
           [Op.like]: `%${pesquisa}%`,
         },
       },
-      offset,
       order: [[attribute, order]],
     });
+    
+    let offset = perPage * (currentPage - 1);
+    let totalPages = Math.ceil(TotalAlunos / perPage);
+    
+    console.log("Offset", offset)
+    const aluno = await Alunos.findAll({
+      where: {
+        nome_completo: {
+          [Op.like]: `%${pesquisa}%`,
+        },
+      },
+      limit: perPage,
+      offset : offset,
+      order: [[attribute, order]],
+    });
+
+    
 
     res.status(200).json({
       status: true,
       msg: "Todos os Alunos",
+      totalPages : totalPages,
       totalAlunos: TotalAlunos,
       data: aluno,
     });
+
+
   } catch (error) {
     res.status(400).json({
       status: false,
