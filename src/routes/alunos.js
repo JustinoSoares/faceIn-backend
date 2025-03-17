@@ -149,6 +149,7 @@ router.get("/all", async (req, res) => {
       msg: "Todos os Alunos",
       totalPages : totalPages,
       totalAlunos: TotalAlunos,
+      perPage: aluno.length,
       data: aluno,
     });
 

@@ -56,12 +56,11 @@
 **Description:** Fetches a paginated list of all students.
 
 **Query Parameters:**
-- `maxLen` (integer, optional): Maximum number of students to retrieve (default: 3).
-- `offset` (integer, optional): Offset for pagination (default: 0).
+- `perPage` (integer, optional): Maximum number of students to retrieve (default: 7).
+- `currentPage` (integer, optional) : show the curret page of pagination(default : 1)
 - `pesquisa` (string, optional): Search keyword for the student's name.
 - `attribute` (string, optional): Attribute to sort by (default: `nome_completo`).
 - `order` (string, optional): Sorting order (`ASC` or `DESC`).
-
 **Responses:**
 - **201 Success:**
   ```json
@@ -201,11 +200,11 @@
 - `nome_completo` (string): Full name.
 - `turno` (string): Shift.
 - `classe` (string): Class.
-- `n_do_aluno` (string): Student number.
+- `n_do_aluno` (string): Student number.(NULL)
 - `ano_letivo` (string): Academic year.
 - `turma` (string): Group.
 - `curso` (string): Course.
-- `n_do_processo` (integer): Process number.
+- `n_do_processo` (integer): Process number.(NULL)
 
 ### Fotos
 - `id` (integer): Primary key.
