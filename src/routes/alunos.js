@@ -126,9 +126,20 @@ router.get("/all", async (req, res) => {
       order: [[attribute, order]],
     });
 
+    const TotalAlunos = await Alunos.count({
+      where: {
+        nome_completo: {
+          [Op.like]: `%${pesquisa}%`,
+        },
+      },
+      offset,
+      order: [[attribute, order]],
+    });
+
     res.status(200).json({
       status: true,
       msg: "Todos os Alunos",
+      totalAlunos: TotalAlunos,
       data: aluno,
     });
   } catch (error) {
