@@ -196,6 +196,9 @@ exports.reconhecimento = async (req, res) => {
     const status_propina = ultimo_mes_pago.length - 1 >= mes_actual;
     // Preparar dados do aluno para resposta
     const respostaAluno = {
+      id: aluno.id,
+      status : true,
+      n_do_aluno: await numero_do_aluno(aluno.id),
       nome_completo: aluno.nome_completo,
       imagem: foto ? foto.url : null, // Verificar se foto existe
       n_do_processo: aluno.n_do_processo,
