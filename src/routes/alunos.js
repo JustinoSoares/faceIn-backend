@@ -64,6 +64,17 @@ router.post(
         images,
       } = req.body;
 
+      if ((classe === "7" || classe === "8" || classe == "9" ) && curso !== "Ensino Geral")
+      {
+        return res.status(400).json({
+          status: false,
+          error: {
+            msg: "Este aluno deve pertencer ao Ensino Geral",
+            error: error.message,
+          },
+        });
+      }
+
       const allAlunos = await Alunos.findAll({
         where: { ano_letivo },
         order: [["id", "DESC"]],
