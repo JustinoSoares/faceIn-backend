@@ -64,8 +64,10 @@ router.post(
         images,
       } = req.body;
 
-      if ((classe === "7" || classe === "8" || classe == "9" ) && curso !== "Ensino Geral")
-      {
+      if (
+        (classe === "7" || classe === "8" || classe == "9") &&
+        curso !== "Ensino Geral"
+      ) {
         return res.status(400).json({
           status: false,
           error: {
@@ -80,7 +82,6 @@ router.post(
         order: [["id", "DESC"]],
         limit: 1,
       });
-
 
       const aluno = await Alunos.create({
         // n_do_processo,
@@ -128,20 +129,21 @@ router.get("/all", async (req, res) => {
     const order = req.query.order || "ASC";
     const perPage = req.query.perPage || 7;
     const currentPage = req.query.currentPage || 1;
+    const parametro = req.query.parametro || "nome_completo";
+
+    const conditional = {
+      where: { parametro: { [Op.like]: `%${pesquisa}%` } },
+    };
 
     const TotalAlunos = await Alunos.count({
-      where: {
-        nome_completo: {
-          [Op.like]: `%${pesquisa}%`,
-        },
-      },
+      conditional,
       order: [[attribute, order]],
     });
-    
+
     let offset = perPage * (currentPage - 1);
     let totalPages = Math.ceil(TotalAlunos / perPage);
-    
-    console.log("Offset", offset)
+
+    console.log("Offset", offset);
     const aluno = await Alunos.findAll({
       where: {
         nome_completo: {
@@ -149,22 +151,18 @@ router.get("/all", async (req, res) => {
         },
       },
       limit: perPage,
-      offset : offset,
+      offset: offset,
       order: [[attribute, order]],
     });
-
-    
 
     res.status(200).json({
       status: true,
       msg: "Todos os Alunos",
-      totalPages : totalPages,
+      totalPages: totalPages,
       totalAlunos: TotalAlunos,
       perPage: aluno.length,
       data: aluno,
     });
-
-
   } catch (error) {
     res.status(400).json({
       status: false,

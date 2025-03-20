@@ -57,30 +57,33 @@ app.get("/", (req, res) => {
 });
 
 // Verificação da conexão
-const sequelize = new Sequelize(process.env.DATABASE_URL,{
-    dialect: process.env.DATABASE_DIALECT,
-    timezone: "+01:00", // Luanda está em UTC+1
-    host: process.env.DATABASE_HOST,
-    port: process.env.PORT,
-    logging: false,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: true, // Use true em produção
-      },
-    },
-  }
-);
+// const sequelize = new Sequelize(process.env.DATABASE_URL,{
+//     dialect: process.env.DATABASE_DIALECT,
+//     timezone: "+01:00", // Luanda está em UTC+1
+//     port: process.env.PORT,
+//     username: process.env.DATABASE_USER,
+//     password: process.env.DATABASE_PASSWORD,
+//     database: process.env.DATABASE_NAME,
+//     host: process.env.DATABASE_HOST,
+//     logging: false,
+//     // dialectOptions: {
+//     //   ssl: {
+//     //     require: true,
+//     //     rejectUnauthorized: true, // Use true em produção
+//     //   },
+//     // },
+//   }
+// );
 
-(async () => {
-  try {
-    await sequelize.authenticate();
-    await sequelize.sync();
-    console.log("Conexão com o banco de dados feita com sucesso!");
-  } catch (error) {
-    console.error("Erro na conexão com o banco de dados: " + error);
-  }
-})();
+// (async () => {
+//   try {
+//     await sequelize.authenticate();
+//     await sequelize.sync();
+//     console.log("Conexão com o banco de dados feita com sucesso!");
+//   } catch (error) {
+//     console.error("Erro na conexão com o banco de dados: " + error);
+//   }
+// })();
 
 app.listen(PORT, () => {
   console.log(`Servidor Online, Servidor Rodando na porta ${PORT}`);

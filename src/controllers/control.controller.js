@@ -11,21 +11,19 @@ const {
 
 async function numero_do_aluno(alunoId) {
   const aluno = await Alunos.findByPk(alunoId);
-  if (!aluno)
-    return -1;
+  if (!aluno) return -1;
   const Aluno_na_turma = await Alunos.findAll({
-    where : {
-      turma : aluno.turma,
-      classe : aluno.classe,
-      curso : aluno.curso,
-      ano_letivo : aluno.ano_letivo
+    where: {
+      turma: aluno.turma,
+      classe: aluno.classe,
+      curso: aluno.curso,
+      ano_letivo: aluno.ano_letivo,
     },
-    order : [["nome_completo", "ASC"]]
+    order: [["nome_completo", "ASC"]],
   });
 
-  const posicao = Aluno_na_turma.findIndex(a => a.id === alunoId) + 1
+  const posicao = Aluno_na_turma.findIndex((a) => a.id === alunoId) + 1;
   return posicao;
-  
 }
 
 exports.permitir = async (req, res) => {
@@ -186,18 +184,29 @@ exports.reconhecimento = async (req, res) => {
     const foto = await Fotos.findOne({
       where: { alunoId: aluno.id },
     });
-    // Obter data atual e mês atual (0-11)
+
     const data_actual = new Date();
-    const mes_actual = data_actual.getMonth();
-    // Determinar o status da propina
+    const mes_actual = data_actual.getMonth(); // Mês atual (0-11)
+    const ano_atual = data_actual.getFullYear();
+
+    // Determinar o ano letivo atual com base no mês
+    const ano_letivo = mes_actual >= 8 ? `${ano_atual}/${ano_atual + 1}` : `${ano_atual - 1}/${ano_atual}`;
+
+    // Buscar os pagamentos de propina do aluno
     const ultimo_mes_pago = await Aluno_propina.findAll({
-      where: { alunoId },
+      where: { alunoId, ano_letivo },
+      order: [["mes", "DESC"]], // Ordenar pelo mês mais recente
+      limit: 1,
     });
-    const status_propina = ultimo_mes_pago.length - 1 >= mes_actual;
+
+    // Verificar se a propina está em dia
+    const ultimo_mes = ultimo_mes_pago.length ? ultimo_mes_pago[0].mes : -1;
+    const status_propina = ultimo_mes >= mes_actual;
+
     // Preparar dados do aluno para resposta
     const respostaAluno = {
       id: aluno.id,
-      status : true,
+      status: true,
       n_do_aluno: await numero_do_aluno(aluno.id),
       nome_completo: aluno.nome_completo,
       imagem: foto ? foto.url : null, // Verificar se foto existe
@@ -230,7 +239,15 @@ exports.reconhecimento = async (req, res) => {
 exports.pagar_propina = async (req, res) => {
   try {
     const alunoId = req.params.alunoId;
-    const { mes, ano_lectivo, valor } = req.body;
+    const { mes, valor } = req.body;
+
+    const data_actual = new Date();
+    const mes_actual = data_actual.getMonth(); // Mês atual (0-11)
+    const ano_atual = data_actual.getFullYear();
+
+    // Determinar o ano letivo atual com base no mês
+    const ano = mes_actual >= 8 ? `${ano_atual}/${ano_atual + 1}` : `${ano_atual - 1}/${ano_atual}`;
+
 
     //verificar se o aluno já pagou a propina
     const propina_aluno = await Aluno_propina.findAll({
@@ -240,7 +257,7 @@ exports.pagar_propina = async (req, res) => {
     const is_pay = await Promise.all(
       propina_aluno.map(async (pay) => {
         const new_pay = await Propinas.findByPk(pay.propinaId);
-        if (new_pay.mes == mes && new_pay.ano_lectivo == ano_lectivo) {
+        if (new_pay.mes == mes && new_pay.ano_lectivo == ano) {
           return false;
         } else {
           return true;
@@ -295,11 +312,9 @@ exports.historico = async (req, res) => {
 
     const countHist = await Historico.count();
     let pages = (countHist / limit).ceil;
-    if (countHist == 0)
-        pages = 1;
+    if (countHist == 0) pages = 1;
     let is_lastPages = false;
-    if (pages == lastPage)
-        is_lastPages = true;
+    if (pages == lastPage) is_lastPages = true;
     offset = limit * lastPage;
 
     const historico = await Historico.findAll({
