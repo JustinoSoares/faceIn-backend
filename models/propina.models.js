@@ -12,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
         defaultValue : uuidv4,
         primaryKey: true,
-        autoIncrement: true,
       },
       mes: {
         type: DataTypes.ENUM(

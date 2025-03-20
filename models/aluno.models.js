@@ -9,13 +9,12 @@ module.exports = (sequelize, DataTypes) => {
     id : {
       type : DataTypes.UUID,
       defaultValue: uuidv4,
-      unique : true,
+      primaryKey : true,
     },
     n_do_processo: {
       type: DataTypes.INTEGER,
-      autoIncrement : true,
-      primaryKey : true,
-      allowNull: false,
+      // autoIncrement : true,
+      allowNull: true,
     },
     n_do_aluno: {
       type: DataTypes.INTEGER,

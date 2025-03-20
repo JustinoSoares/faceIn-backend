@@ -194,8 +194,8 @@ exports.reconhecimento = async (req, res) => {
 
     // Buscar os pagamentos de propina do aluno
     const ultimo_mes_pago = await Aluno_propina.findAll({
-      where: { alunoId, ano_letivo },
-      order: [["mes", "DESC"]], // Ordenar pelo mês mais recente
+      where: { alunoId },
+      order: [["createdAt", "DESC"]], // Ordenar pelo mês mais recente
       limit: 1,
     });
 

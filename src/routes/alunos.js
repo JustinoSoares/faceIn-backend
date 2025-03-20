@@ -79,12 +79,18 @@ router.post(
 
       const allAlunos = await Alunos.findAll({
         where: { ano_letivo },
-        order: [["id", "DESC"]],
+        order: [["createdAt", "DESC"]],
         limit: 1,
       });
+      let n_do_processo = 0;
+      if (!allAlunos) 
+         n_do_processo = 1;
+      else 
+         n_do_processo = allAlunos[0].n_do_processo + 1;
+      console.log(n_do_processo);
 
       const aluno = await Alunos.create({
-        // n_do_processo,
+        n_do_processo,
         nome_completo,
         turno,
         classe,

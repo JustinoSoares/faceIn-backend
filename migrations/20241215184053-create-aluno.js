@@ -6,13 +6,12 @@ module.exports = {
       id: {
         type: Sequelize.STRING,
         defaultValue: Sequelize.UUIDV4,
-        unique: true,  // Adiciona restrição única
+        primaryKey: true, // Adicione esta linha
       },
       n_do_processo: {
         type: Sequelize.INTEGER,
-        autoIncrement: true,
-        allowNull: false,
-        primaryKey: true, // Adicione esta linha
+        // autoIncrement: true,
+        allowNull: true,
       },
       n_do_aluno:{
         type: Sequelize.INTEGER,
