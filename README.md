@@ -61,6 +61,7 @@
 - `pesquisa` (string, optional): Search keyword for the student's name.
 - `attribute` (string, optional): Attribute to sort by (default: `nome_completo`).
 - `order` (string, optional): Sorting order (`ASC` or `DESC`).
+- `parametro` (string) : definicao de qual parametro deve se pesquisar (classe, turno, nome_completo...)
 **Responses:**
 - **201 Success:**
   ```json

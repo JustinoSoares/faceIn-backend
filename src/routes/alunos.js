@@ -83,10 +83,8 @@ router.post(
         limit: 1,
       });
       let n_do_processo = 0;
-      if (!allAlunos) 
-         n_do_processo = 1;
-      else 
-         n_do_processo = allAlunos[0].n_do_processo + 1;
+      if (!allAlunos) n_do_processo = 1;
+      else n_do_processo = allAlunos[0].n_do_processo + 1;
       console.log(n_do_processo);
 
       const aluno = await Alunos.create({
@@ -128,34 +126,29 @@ router.post(
 
 router.get("/all", async (req, res) => {
   try {
-    // const maxLen = req.query.maxLen || 3;
-    // const offset = req.query.offset || 0;
     const pesquisa = req.query.pesquisa || "";
     const attribute = req.query.attribute || "nome_completo";
     const order = req.query.order || "ASC";
-    const perPage = req.query.perPage || 7;
-    const currentPage = req.query.currentPage || 1;
-    const parametro = req.query.parametro || "nome_completo";
+    const perPage = parseInt(req.query.perPage) || 7;
+    const currentPage = parseInt(req.query.currentPage) || 1;
+    const parametro = req.query.parametro || "nome_completo"; // O nome do campo que será filtrado
 
     const conditional = {
-      where: { parametro: { [Op.like]: `%${pesquisa}%` } },
+      where: { [parametro]: { [Op.like]: `%${pesquisa}%` } }, // Aqui está a correção
     };
 
+    // Contagem total de alunos
     const TotalAlunos = await Alunos.count({
-      conditional,
-      order: [[attribute, order]],
+      where: conditional.where, // Corrigindo a referência ao filtro
     });
 
+    // Paginação
     let offset = perPage * (currentPage - 1);
     let totalPages = Math.ceil(TotalAlunos / perPage);
 
-    console.log("Offset", offset);
+    // Busca dos alunos com paginação
     const aluno = await Alunos.findAll({
-      where: {
-        nome_completo: {
-          [Op.like]: `%${pesquisa}%`,
-        },
-      },
+      where: conditional.where, // Corrigindo a referência ao filtro
       limit: perPage,
       offset: offset,
       order: [[attribute, order]],
