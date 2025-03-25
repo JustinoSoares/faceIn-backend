@@ -54,7 +54,7 @@ router.post("/create", auth.admin, validator.create, async (req, res) => {
 
     const vigilante = await Vigilante.create({
       turno,
-      desc,
+      descricao: desc,
       UserId: users.id,
     });
     const mailjetClient = await mailjet.apiConnect(
@@ -116,7 +116,11 @@ router.get("/all", auth.admin, async (req, res) => {
     const each_vigilante = await Promise.all(
       vigilante.map(async (each) => {
         const user = await Users.findByPk(each.UserId);
+        const vigilante = await Vigilante.findOne({
+          where: { UserId: user.id },
+        });
         const data = {
+          id : user.id,
           nome_completo: user.nome_completo,
           telefone: user.telefone,
           email: user.email,
@@ -172,14 +176,27 @@ router.put("/update/:id", auth.double, async (req, res) => {
 
 router.delete("/delete/:id", auth.double, async (req, res) => {
   try {
-    const vigilante = await Vigilante.findByPk(req.params.id);
+    const user = await Users.findByPk(req.params.id);
+    if (!user) return res.status(404).json({ 
+      msg: "Usuário não encontrado" 
+    });
+    const vigilante = await Vigilante.findOne({
+      where: { UserId: user.id },
+    });
     if (!vigilante)
       return res.status(404).json({ error: "Vigilante não encontrado" });
 
     await vigilante.destroy();
-    res.status(200).send();
+    await user.destroy();
+    res.status(200).json({
+      status: true,
+      msg: "Vigilante deletado com sucesso",
+    });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({
+      msg : "Ocorreu um erro ao deletar o vigilante",
+       error: error.message 
+    });
   }
 });
 // permitir a entrada de um aluno

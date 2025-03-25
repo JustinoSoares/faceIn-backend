@@ -278,7 +278,7 @@ exports.pagar_propina = async (req, res) => {
 
     const propina = await Propinas.create({
       mes,
-      ano_lectivo,
+      ano_lectivo : ano,
     });
 
     await Aluno_propina.create({
