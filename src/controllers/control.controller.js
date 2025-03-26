@@ -214,6 +214,8 @@ exports.reconhecimento = async (req, res) => {
       turno: aluno.turno,
       turma: aluno.turma,
       curso: aluno.curso,
+      classe: aluno.classe,
+      ano_letivo : aluno.ano_letivo,
       status_propina,
     };
 
