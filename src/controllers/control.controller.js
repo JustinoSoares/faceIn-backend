@@ -241,66 +241,72 @@ exports.reconhecimento = async (req, res) => {
 exports.pagar_propina = async (req, res) => {
   try {
     const alunoId = req.params.alunoId;
-    const { mes, valor } = req.body;
+    const { meses, toogle } = req.body; // Agora recebe um array de meses
 
     const data_actual = new Date();
-    const mes_actual = data_actual.getMonth(); // Mês atual (0-11)
+    const mes_actual = data_actual.getMonth();
     const ano_atual = data_actual.getFullYear();
-
+    
     // Determinar o ano letivo atual com base no mês
     const ano = mes_actual >= 8 ? `${ano_atual}/${ano_atual + 1}` : `${ano_atual - 1}/${ano_atual}`;
 
-
-    //verificar se o aluno já pagou a propina
-    const propina_aluno = await Aluno_propina.findAll({
-      alunoId,
+    // Obter pagamentos existentes do aluno
+    const propina_aluno = await Aluno_propina.findAll({ where: { alunoId } });
+    
+    const propinas_existentes = await Propinas.findAll({
+      where: {
+        id: propina_aluno.map((p) => p.propinaId),
+        ano_lectivo: ano,
+      },
     });
 
-    const is_pay = await Promise.all(
-      propina_aluno.map(async (pay) => {
-        const new_pay = await Propinas.findByPk(pay.propinaId);
-        if (new_pay.mes == mes && new_pay.ano_lectivo == ano) {
-          return false;
-        } else {
-          return true;
-        }
-      })
-    );
+    if (toogle) {
+      // PAGAR PROPINA (Adiciona os meses que ainda não foram pagos)
+      const meses_nao_pagados = meses.filter(
+        (mes) => !propinas_existentes.some((p) => p.mes == mes)
+      );
 
-    if (is_pay.includes(false)) {
-      return res.status(400).json({
-        status: false,
-        error: [
-          {
-            msg: "Pagamento para esse mês já foi efetuado!",
-          },
-        ],
+      if (meses_nao_pagados.length === 0) {
+        return res.status(400).json({
+          status: false,
+          error: [{ msg: "Todos os meses selecionados já foram pagos!" }],
+        });
+      }
+
+      for (const mes of meses_nao_pagados) {
+        const propina = await Propinas.create({ mes, ano_lectivo: ano });
+        await Aluno_propina.create({ alunoId, propinaId: propina.id, valor : "19000" });
+      }
+
+      return res.status(200).json({
+        status: true,
+        msg: "Pagamentos realizados com sucesso",
+      });
+    } else {
+      // CANCELAR PAGAMENTO (Remove os meses selecionados)
+      const propinas_para_remover = propinas_existentes.filter((p) => meses.includes(p.mes));
+
+      if (propinas_para_remover.length === 0) {
+        return res.status(400).json({
+          status: false,
+          error: [{ msg: "Nenhum dos meses selecionados foi encontrado como pago!" }],
+        });
+      }
+
+      for (const propina of propinas_para_remover) {
+        await Aluno_propina.destroy({ where: { alunoId, propinaId: propina.id } });
+        await Propinas.destroy({ where: { id: propina.id } });
+      }
+
+      return res.status(200).json({
+        status: true,
+        msg: "Pagamentos cancelados com sucesso",
       });
     }
-
-    const propina = await Propinas.create({
-      mes,
-      ano_lectivo : ano,
-    });
-
-    await Aluno_propina.create({
-      alunoId,
-      propinaId: propina.id,
-      valor,
-    });
-    return res.status(200).json({
-      status: true,
-      msg: "Pagamento realizado com sucesso",
-    });
   } catch (error) {
     return res.status(400).json({
       status: false,
-      error: [
-        {
-          msg: "Problemas ao efectuar o pagamento de propina!",
-          error: error.message,
-        },
-      ],
+      error: [{ msg: "Problemas ao processar a operação!", error: error.message }],
     });
   }
 };
