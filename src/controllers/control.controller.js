@@ -210,7 +210,7 @@ exports.reconhecimento = async (req, res) => {
       n_do_aluno: await numero_do_aluno(aluno.id),
       nome_completo: aluno.nome_completo,
       imagem: foto ? foto.url : null, // Verificar se foto existe
-      n_do_processo: aluno.n_do_processo,
+      n_do_processo: aluno?.n_do_processo,
       turno: aluno.turno,
       turma: aluno.turma,
       curso: aluno.curso,
