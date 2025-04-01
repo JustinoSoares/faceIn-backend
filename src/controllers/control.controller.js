@@ -121,11 +121,23 @@ exports.negar = async (req, res) => {
   }
 };
 
+function ordenarMeses(meses) {
+  const ordemPersonalizada = [
+    "setembro", "outubro", "novembro", "dezembro",
+    "janeiro", "fevereiro", "março", "abril",
+    "maio", "junho", "julho", "agosto"
+  ];
+
+  return meses.sort((a, b) => 
+    ordemPersonalizada.indexOf(a.toLowerCase()) - ordemPersonalizada.indexOf(b.toLowerCase())
+  );
+}
+
 exports.reconhecimento = async (req, res) => {
   try {
     const alunoId = req.params.alunoId;
 
-    // Buscar o aluno pelo ID
+    // Buscar aluno pelo ID
     const aluno = await Alunos.findByPk(alunoId);
     if (!aluno) {
       return res.status(404).json({
@@ -135,87 +147,83 @@ exports.reconhecimento = async (req, res) => {
     }
 
     // Buscar todas as propinas do aluno
-    const propinas = await Aluno_propina.findAll({
-      where: { alunoId },
-    });
+    const propinas = await Aluno_propina.findAll({ where: { alunoId } });
 
     const meses = [
-      "Janeiro",
-      "Fevereiro",
-      "Março",
-      "Abril",
-      "Maio",
-      "Junho",
-      "Julho",
-      "Agosto",
-      "Setembro",
-      "Outubro",
-      "Novembro",
-      "Dezembro",
+      "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+      "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
     ];
 
+    let historico_propinas = [];
+    let meses_pagos = [];
+
     if (propinas.length > 0) {
-      // Obter os meses pagos, se houver propinas
-      let meses_pagos = [];
-      if (propinas.length > 0) {
-        meses_pagos = await Promise.all(
-          propinas.map(async (each) => {
-            const propinass = await Propinas.findByPk(each.propinaId);
-            return propinass ? propinass.mes : null; // Verificar se propinass existe
-          })
-        ).then((meses) => meses.filter((mes) => mes !== null)); // Filtrar valores nulos
-      }
+      meses_pagos = await Promise.all(
+        propinas.map(async (each) => {
+          const propina = await Propinas.findByPk(each.propinaId);
+          return propina ? propina.mes : null; // Evitar valores nulos
+        })
+      ).then((meses) => meses.filter((mes) => mes !== null));
 
-      // Construir histórico das propinas
-      var historico_propinas = meses.map((mes) => {
-        const status = meses_pagos.includes(mes);
-        return { mes, status };
-      });
-      let ultimo_mes_pago = -1;
-      if (propinas[0].propinaId) {
-        const propina_each = await Propinas.findByPk(propinas[0].propinaId);
-      }
+      historico_propinas = meses.map((mes) => ({
+        mes,
+        status: meses_pagos.includes(mes)
+      }));
     } else {
-      var historico_propinas = meses.map((mes) => {
-        return { mes, status: false };
-      });
+      historico_propinas = meses.map((mes) => ({ mes, status: false }));
     }
+
     // Buscar a foto do aluno, se existir
-    const foto = await Fotos.findOne({
-      where: { alunoId: aluno.id },
-    });
+    const foto = await Fotos.findOne({ where: { alunoId: aluno.id } });
 
-    const data_actual = new Date();
-    const mes_actual = data_actual.getMonth(); // Mês atual (0-11)
-    const ano_atual = data_actual.getFullYear();
+    const data_atual = new Date();
+    const mes_atual = data_atual.getMonth(); // 0-11
+    const dia_atual = data_atual.getDate();
+    const ano_atual = data_atual.getFullYear();
 
-    // Determinar o ano letivo atual com base no mês
-    const ano_letivo = mes_actual >= 8 ? `${ano_atual}/${ano_atual + 1}` : `${ano_atual - 1}/${ano_atual}`;
+    // Determinar o ano letivo com base no mês
+    const ano_letivo = mes_atual >= 8 ? `${ano_atual}/${ano_atual + 1}` : `${ano_atual - 1}/${ano_atual}`;
 
-    // Buscar os pagamentos de propina do aluno
-    const ultimo_mes_pago = await Aluno_propina.findAll({
+    // Buscar todos os pagamentos de propina do aluno
+    const todos_meses_pagos = await Aluno_propina.findAll({
       where: { alunoId },
-      order: [["createdAt", "DESC"]], // Ordenar pelo mês mais recente
-      limit: 1,
+      order: [["createdAt", "DESC"]]
     });
+
+    // Construir array de meses pagos
+    const meses_pagos_lista = await Promise.all(
+      todos_meses_pagos.map(async (p) => {
+        const propina = await Propinas.findByPk(p.propinaId);
+        return propina ? propina.mes : null;
+      })
+    ).then((meses) => meses.filter((mes) => mes !== null));
+
+    // Ordenar os meses pagos corretamente
+    const orderMonth = ordenarMeses(meses_pagos_lista);
+
+    // Pegar o último mês pago, se existir
+    const lastMonth = orderMonth.length > 0 ? orderMonth[orderMonth.length - 1] : null;
 
     // Verificar se a propina está em dia
-    const ultimo_mes = ultimo_mes_pago.length ? ultimo_mes_pago[0].mes : -1;
-    const status_propina = ultimo_mes >= mes_actual;
+    const ultimo_mes = lastMonth ? meses.findIndex((mes) => mes === lastMonth) : -1;
+    let status_propina = ultimo_mes !== -1 && ultimo_mes >= mes_atual;
+    if (ultimo_mes == mes_atual - 1 && dia_atual <= 10)
+      status_propina = true;
+      
 
-    // Preparar dados do aluno para resposta
+    // Dados do aluno para resposta
     const respostaAluno = {
       id: aluno.id,
       status: true,
       n_do_aluno: await numero_do_aluno(aluno.id),
       nome_completo: aluno.nome_completo,
-      imagem: foto ? foto.url : null, // Verificar se foto existe
+      imagem: foto ? foto.url : null,
       n_do_processo: aluno?.n_do_processo,
       turno: aluno.turno,
       turma: aluno.turma,
       curso: aluno.curso,
       classe: aluno.classe,
-      ano_letivo : aluno.ano_letivo,
+      ano_letivo,
       status_propina,
     };
 
@@ -225,18 +233,15 @@ exports.reconhecimento = async (req, res) => {
       aluno: respostaAluno,
       propinas: historico_propinas,
     });
+
   } catch (error) {
     return res.status(400).json({
       status: false,
-      error: [
-        {
-          msg: "Erro ao trazer os dados dos alunos",
-          error: error.message,
-        },
-      ],
+      error: [{ msg: "Erro ao trazer os dados dos alunos", error: error.message }],
     });
   }
 };
+
 
 exports.pagar_propina = async (req, res) => {
   try {
