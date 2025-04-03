@@ -190,7 +190,7 @@ router.get("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
-    const aluno = await Aluno.findByPk(req.params.id);
+    const aluno = await Alunos.findByPk(req.params.id);
     if (!aluno) return res.status(404).json({ error: "Aluno não encontrado" });
     await aluno.update(req.body);
     return res.json(aluno);
@@ -201,11 +201,30 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    const aluno = await Aluno.findByPk(req.params.id);
-    if (!aluno) return res.status(404).json({ error: "Aluno não encontrado" });
 
+    const aluno = await Alunos.findByPk(req.params.id);
+    if (!aluno) return res.status(404).json({ msg: "Aluno não encontrado" });
+    const fotos = await Fotos.findAll({
+      where : {
+        alunoId : aluno.id
+      }
+    })
+
+    const propinas = await Aluno_propina.findAll({
+      where : {alunoId : aluno.id}
+    })
+    
+    fotos.forEach((foto) => {
+      foto.destroy();
+    })
+
+    propinas.forEach((propina) =>{
+      propina.destroy();
+    })
     await aluno.destroy();
-    return res.status(204).send();
+    return res.status(204).json({
+      msg : "Aluno deletado com sucesso"
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
