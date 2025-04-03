@@ -21,6 +21,8 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: "*",
+    methods : ["GET", "POST", "PUT", "DELETE", "get", "post", "put", "delete"],
+    allowedHeaders: ["Content-type", "Authorization"],
   },
 });
 
@@ -39,7 +41,7 @@ io.on("connect", (socket) => {
 app.use(
   cors({
     origin: "*",
-    methods: ["get", "post", "put", "delete"],
+    methods: ["get", "post", "put", "delete", "GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-type", "Authorization"],
   })
 );

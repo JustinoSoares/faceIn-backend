@@ -10,7 +10,6 @@ module.exports = {
       },
       n_do_processo: {
         type: Sequelize.INTEGER,
-        // autoIncrement: true,
         allowNull: true,
       },
       n_do_aluno:{

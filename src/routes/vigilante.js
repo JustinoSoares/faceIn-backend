@@ -78,10 +78,46 @@ router.post("/create", auth.admin, validator.create, async (req, res) => {
               },
             ],
             Subject: `Pin de acesso do vigilante ${users.nome_completo}`,
-            TextPart:
-              `Pin de acesso ** ${pin.toString()} **`,
+            HTMLPart: `
+            <!DOCTYPE html>
+            <html lang="pt-br">
+            <title>Online HTML Editor</title>
+
+            <head>
+            <meta charset="utf-8">
+            </head>
+          <body style="display: flex; justify-content: center; align-items: center;">
+           <div style="text-align: center; margin-top: 50px">
+                  <div style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  gap: 20px;
+                  width: 100%;
+                    "
+            >
+        </div>
+        <h1>FaceIn</h1>
+      <h3>Verificação da sua conta!</h3>
+      <p>O seu código para ter acesso a sua conta:</p>
+      <div
+        style="
+          padding: 2px 30px;
+          margin-top: 20px;
+          border-radius: 10px;
+          border: 1px solid #ccc;
+          display: inline-block;
+        "
+      >
+        <h2 style="color:rgb(60, 131, 32)">${pin.toString()}</h2>
+      </div>
+    </div>
+    </body>
+    </html>
+            `,
           },
         ],
+      
       });
 
     const response = await request;
