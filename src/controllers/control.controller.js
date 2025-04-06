@@ -358,74 +358,84 @@ exports.pagar_propina = async (req, res) => {
 
 exports.historico = async (req, res) => {
   try {
+    // 📌 Parametrização da paginação
     const limit = parseInt(req.query.limit) || 5;
-    const lastPage = parseInt(req.query.lastPage) || 1;
-    const order = req.query.order || "DESC";
+    const page = parseInt(req.query.lastPage) || 1;
+    const offset = (page - 1) * limit;
+    const order = req.query.order?.toUpperCase() === "ASC" ? "ASC" : "DESC";
     const attribute = req.query.attribute || "createdAt";
 
-    const countHist = await Historico.count();
-    const pages = countHist === 0 ? 1 : Math.ceil(countHist / limit);
-    const is_lastPages = pages === lastPage;
-    const offset = (lastPage - 1) * limit;
-
+    // 📌 Data de hoje às 00:00
     const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0); // Define a hora para 00:00:00
+    hoje.setHours(0, 0, 0, 0);
 
-    const historicoFormatado = await Historico.findAll({
+    // 📌 Total de registros do histórico (para cálculo de páginas)
+    const totalHistoricoHoje = await Historico.count({
       where: {
-        createdAt: {
-          [Op.gte]: hoje, // Maior ou igual a hoje 00:00:00
-        },
+        createdAt: { [Op.gte]: hoje },
       },
-      order: [["createdAt", "DESC"]], // Ordena do mais recente para o mais antigo    
     });
 
-    const historico = historicoFormatado.map((item) => item.dataValues);
+    const totalPages = Math.max(1, Math.ceil(totalHistoricoHoje / limit));
+    const is_lastPages = page >= totalPages;
 
-    // Obter os dados dos alunos associados ao histórico
-    const HistoricoAlunos = await Promise.all(
-      historico.map(async (each) => {
-        const aluno = await Alunos.findByPk(each.alunoId);
-        if (!aluno) {
-          return null; // Retorna null caso o aluno não exista
-        }
+    // 📌 Busca paginada dos históricos do dia
+    const historicoBruto = await Historico.findAll({
+      where: {
+        createdAt: { [Op.gte]: hoje },
+      },
+      order: [[attribute, order]],
+      limit,
+      offset,
+    });
 
-        const photo = await Fotos.findAll({
+    // 📌 Mapeamento dos históricos e associação com dados do aluno e foto
+    const historico = await Promise.all(
+      historicoBruto.map(async (item) => {
+        const { alunoId, status, createdAt } = item;
+        const aluno = await Alunos.findByPk(alunoId);
+
+        if (!aluno) return null;
+
+        const foto = await Fotos.findOne({
           where: { alunoId: aluno.id },
-          limit: 1,
+          order: [["createdAt", "DESC"]],
         });
 
         return {
           alunoId: aluno.id,
           nome_completo: aluno.nome_completo,
-          timestamp: each.createdAt,
-          img: photo.length > 0 ? photo[0].url : null, // Evita erro se não houver foto
-          status: each.status,
+          timestamp: createdAt,
+          img: foto ? foto.url : null,
+          status,
           createdAt: aluno.createdAt,
-          lastPage: lastPage,
         };
       })
     );
 
-    // Remover registros `null` caso algum aluno não exista
-    const alunosFiltrados = HistoricoAlunos.filter((aluno) => aluno !== null);
+    const historicoFiltrado = historico.filter((item) => item !== null);
 
-    // Contar vigilantes
-    const countVigilante = await Vigilante.count();
+    // 📌 Outras informações adicionais
+    const totalAlunos = await Alunos.count();
+    const totalVigilantes = await Vigilante.count();
 
+    // 📌 Retorno da resposta formatada
     return res.status(200).json({
       status: true,
+      currentPage: page,
+      totalPages,
       is_lastPages,
-      alunosLength: alunosFiltrados.length,
-      vigilanteLength: countVigilante,
-      historico: alunosFiltrados,
+      historico: historicoFiltrado,
+      historicoHojeLength: totalHistoricoHoje,
+      alunosLength: historicoFiltrado.length,
+      vigilanteLength: totalVigilantes,
+      totalAlunos,
     });
   } catch (error) {
     return res.status(400).json({
       status: false,
-      data: {
-        error: error.message,
-      },
+      error: error.message,
     });
   }
 };
+

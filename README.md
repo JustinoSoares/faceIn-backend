@@ -470,26 +470,22 @@
 - **Request Query**:
   - `limit` (string) - limit of each page
   - `lastPage` (string) - last page
-  - `order` (string) - Order of data cames
+  - `order` (string) - Order of data cames (ASC, DESC)
   - `atribute` (string) - Atribute that is order
- 
-    
+
+   
   - **200** (Success)
     ```json
     {
-      "status": true,
-      "is_lastPages" : false,
-      "alunosLength": 1000,
-      "vigilanteLength": 1000,
-      "historico" : {
-         "alunoId": ...,
-          "nome_completo": ...,
-          "timestamp": ...,
-          "img": ...,
-          "status": ...,
-          "createdAt": ...,
-          "lastPage": ...,
-      }
+      status: true,
+      currentPage: page,
+      totalPages,
+      is_lastPages,
+      historico: [...],
+      historicoHojeLength: 123,
+      alunosLength: 123,
+      vigilanteLength: 123,
+      totalAlunos: 123,
     }
     ```
 
