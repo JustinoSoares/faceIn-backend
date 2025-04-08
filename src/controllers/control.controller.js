@@ -359,11 +359,13 @@ exports.pagar_propina = async (req, res) => {
 exports.historico = async (req, res) => {
   try {
     // 📌 Parametrização da paginação
-    const limit = parseInt(req.query.limit) || 5;
+    const limit = parseInt(req.query.peerPage) || 5;
     const page = parseInt(req.query.lastPage) || 1;
     const offset = (page - 1) * limit;
     const order = req.query.order?.toUpperCase() === "ASC" ? "ASC" : "DESC";
     const attribute = req.query.attribute || "createdAt";
+    const search = req.query.pesquisa || "";
+
 
     // 📌 Data de hoje às 00:00
     const hoje = new Date();
@@ -374,6 +376,17 @@ exports.historico = async (req, res) => {
       where: {
         createdAt: { [Op.gte]: hoje },
       },
+      include: [
+        {
+          model: Alunos,
+          as: "aluno",
+          where: {
+            nome_completo: {
+              [Op.iLike]: `%${search}%`,
+            },
+          },
+        },
+      ],
     });
 
     const totalPages = Math.max(1, Math.ceil(totalHistoricoHoje / limit));
@@ -387,6 +400,17 @@ exports.historico = async (req, res) => {
       order: [[attribute, order]],
       limit,
       offset,
+      include: [
+        {
+          model: Alunos,
+          as: "aluno",
+          where: {
+            nome_completo: {
+              [Op.iLike]: `%${search}%`,
+            },
+          },
+        },
+      ],
     });
 
     // 📌 Mapeamento dos históricos e associação com dados do aluno e foto
