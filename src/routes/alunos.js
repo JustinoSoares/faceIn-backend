@@ -9,6 +9,7 @@ const {
 const upload = require("../config/upload.config");
 const cloudinary = require("../config/cloudinary.config");
 const fs = require("fs");
+const {startRetry, stop} = require("../middleware/execPy.js")
 
 const auth = require("../auth/main.auth.js");
 
@@ -107,6 +108,7 @@ router.post(
           return fotoData;
         })
       );
+      await startRetry(res);
       res.status(201).json({
         status: true,
         msg: "Aluno cadastrado com sucesso",
@@ -154,7 +156,6 @@ router.get("/all", async (req, res) => {
       offset: offset,
       order: [[attribute, order]],
     });
-
     res.status(200).json({
       status: true,
       msg: "Todos os Alunos",

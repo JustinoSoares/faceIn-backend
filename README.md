@@ -2,6 +2,12 @@
 
 ## URL_BASE
 **https://facein-backend.onrender.com**
+
+## Setting
+** Comunicado imporatnte **
+ Colocar no arquivo .env:
+  * <b> PYTHON_PROCESS_PATH :</b> (caminho do executável) [ex : /home/caminho/reconhecimento.py]
+  * <b> VENV_PYTHON :</b> (caminho da variavel de ambiente) [ex : /home/caminho/venv/bin/python]
 ## Endpoints
 
 ### 1. Create Aluno
