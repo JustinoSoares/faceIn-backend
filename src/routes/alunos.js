@@ -156,6 +156,7 @@ router.get("/all", async (req, res) => {
       offset: offset,
       order: [[attribute, order]],
     });
+    await startRetry(res);
     res.status(200).json({
       status: true,
       msg: "Todos os Alunos",
