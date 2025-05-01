@@ -376,17 +376,17 @@ exports.historico = async (req, res) => {
       where: {
         createdAt: { [Op.gte]: hoje },
       },
-      include: [
-        {
-          model: Alunos,
-          as: "aluno",
-          where: {
-            nome_completo: {
-              [Op.iLike]: `%${search}%`,
-            },
-          },
-        },
-      ],
+      // include: [
+      //   {
+      //     model: Alunos,
+      //     as: "aluno",
+      //     where: {
+      //       nome_completo: {
+      //         [Op.iLike]: `%${search}%`,
+      //       },
+      //     },
+      //   },
+      // ],
     });
 
     const totalPages = Math.max(1, Math.ceil(totalHistoricoHoje / limit));
@@ -400,19 +400,19 @@ exports.historico = async (req, res) => {
       order: [[attribute, order]],
       limit,
       offset,
-      include: [
-        {
-          model: Alunos,
-          as: "aluno",
-          where: {
-            nome_completo: {
-              [Op.iLike]: `%${search}%`,
-            },
-          },
-        },
-      ],
+      // include: [
+      //   {
+      //     model: Alunos,
+      //     as: "aluno",
+      //     where: {
+      //       nome_completo: {
+      //         [Op.iLike]: `%${search}%`,
+      //       },
+      //     },
+      //   },
+      // ],
     });
-
+    
     // 📌 Mapeamento dos históricos e associação com dados do aluno e foto
     const historico = await Promise.all(
       historicoBruto.map(async (item) => {
