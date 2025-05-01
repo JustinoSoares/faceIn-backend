@@ -5,11 +5,13 @@ const {
   Fotos,
   Propinas,
   Aluno_propina,
+  Historico,
+  Reconhecimento,
 } = require("../../models/index.js");
 const upload = require("../config/upload.config");
 const cloudinary = require("../config/cloudinary.config");
 const fs = require("fs");
-const {startRetry, stop} = require("../middleware/execPy.js")
+const { startRetry, stop } = require("../middleware/execPy.js");
 
 const auth = require("../auth/main.auth.js");
 
@@ -204,29 +206,44 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-
     const aluno = await Alunos.findByPk(req.params.id);
     if (!aluno) return res.status(404).json({ msg: "Aluno não encontrado" });
+
     const fotos = await Fotos.findAll({
-      where : {
-        alunoId : aluno.id
-      }
-    })
+      where: {
+        alunoId: aluno.id,
+      },
+    });
 
     const propinas = await Aluno_propina.findAll({
-      where : {alunoId : aluno.id}
-    })
-    
+      where: { alunoId: aluno.id },
+    });
+
+    const historicos = await Historico.findAll({
+      where: { alunoId: aluno.id },
+    });
+
+    const reconhecimentos = await Reconhecimento.findAll({
+      where: { alunoId: aluno.id },
+    });
     fotos.forEach((foto) => {
       foto.destroy();
-    })
+    });
 
-    propinas.forEach((propina) =>{
+    propinas.forEach((propina) => {
       propina.destroy();
-    })
+    });
+
+    historicos.forEach((his) => {
+      his.destroy();
+    });
+
+    reconhecimentos.forEach((rec) => {
+      rec.destroy();
+    });
     await aluno.destroy();
-    return res.status(204).json({
-      msg : "Aluno deletado com sucesso"
+    return res.status(200).json({
+      msg: "Aluno deletado com sucesso",
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
