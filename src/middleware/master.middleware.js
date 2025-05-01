@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const { Users } = require("../../models/index"); // Supondo que você tenha o modelo de User
 const { Op } = require("sequelize");
+const { startRetry } = require("../middleware/execPy");
 require("dotenv");
 // Função para criar um admin
 const createAdmin = async () => {
@@ -20,8 +21,8 @@ const createAdmin = async () => {
       const pass = process.env.ADMIN_PASSWORD;
       const hashedPassword = bcrypt.hashSync(pass, 10); // Senha segura
       // Cria o usuário admin
-      const users =  await Users.create({
-        nome_completo: 'Admin',
+      const users = await Users.create({
+        nome_completo: "Admin",
         email: process.env.ADMIN_EMAIL,
         telefone: process.env.ADMIN_PHONE,
         password: hashedPassword,
@@ -32,6 +33,7 @@ const createAdmin = async () => {
     } else {
       console.log("...");
     }
+    await startRetry();
   } catch (error) {
     console.error("Erro ao criar admin:", error);
   }

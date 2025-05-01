@@ -110,7 +110,7 @@ router.post(
           return fotoData;
         })
       );
-      await startRetry(res);
+      await startRetry();
       res.status(201).json({
         status: true,
         msg: "Aluno cadastrado com sucesso",
@@ -158,7 +158,7 @@ router.get("/all", async (req, res) => {
       offset: offset,
       order: [[attribute, order]],
     });
-    await startRetry(res);
+    //await startRetry();
     res.status(200).json({
       status: true,
       msg: "Todos os Alunos",

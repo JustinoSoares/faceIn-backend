@@ -33,7 +33,7 @@ async function killPortProcess(port) {
   }
 }
 
-async function startPython(res) {
+async function startPython() {
   console.log('Tentando iniciar o script Python...');
 
   pythonProcess = exec(`${venvPython} ${pythonAppPath}`, async (error, stdout, stderr) => {
@@ -48,12 +48,12 @@ async function startPython(res) {
 
         await killPortProcess(8000);
         await stop();
-        await startPython(res);
+        await startPython();
       }
     }
   });
-
-  if (res) console.log('Python script started!');
+  if (pythonProcess)
+  console.log('Python script started!');
 }
 
 const stop = async () => {
@@ -66,7 +66,7 @@ const stop = async () => {
   }
 };
 
-const startRetry = async (res) => {
+const startRetry = async () => {
   await stop();
 
   const available = await isPortAvailable(8000);
@@ -74,8 +74,7 @@ const startRetry = async (res) => {
     console.log('Porta 8000 ocupada. Tentando matar o processo...');
     await killPortProcess(8000);
   }
-
-  await startPython(res);
+  await startPython();
 };
 
 module.exports = { startRetry, stop };
